@@ -1,27 +1,33 @@
 from graph.loader import carregar_grafo
 from graph.filters import filtrar_nos, filtrar_adjacencia
 from graph.components import encontrar_componentes
+from graph.random_nodes import selecionar_dois_nos
 from visualization.plot_graph import plotar_componente
 
 
 def main():
-
+    # ==========================
+    # 1. Carregar o grafo
+    # ==========================
     caminho = "../data/grafo_adjacencia_enriquecido.json"
 
-    # Carrega o grafo
     nos, adjacencia = carregar_grafo(caminho)
 
     print(f"Nós totais: {len(nos)}")
     print(f"Lista de adjacência: {len(adjacencia)}")
 
-    # Filtra os estados
+    # ==========================
+    # 2. Filtrar os estados
+    # ==========================
     nos_filtrados = filtrar_nos(nos)
     adj_filtrada = filtrar_adjacencia(adjacencia, nos_filtrados)
 
     print(f"Nós após filtro: {len(nos_filtrados)}")
     print(f"Adjacências após filtro: {len(adj_filtrada)}")
 
-    # Encontra os componentes
+    # ==========================
+    # 3. Encontrar componentes conectados
+    # ==========================
     componentes = encontrar_componentes(adj_filtrada)
 
     print(f"Componentes encontrados: {len(componentes)}")
@@ -31,12 +37,24 @@ def main():
 
     print(f"Maior componente: {len(maior_componente)} nós")
 
-    # Gera a imagem
+    # ==========================
+    # 4. Selecionar dois nós aleatórios
+    # ==========================
+    origem, destino = selecionar_dois_nos(maior_componente)
+
+    print(f"Nó de origem: {origem}")
+    print(f"Nó de destino: {destino}")
+
+    # ==========================
+    # 5. Gerar visualização
+    # ==========================
     plotar_componente(
-        nos_filtrados,
-        adj_filtrada,
-        maior_componente,
-        "../images/maior_componente.png"
+        nos=nos_filtrados,
+        adjacencia=adj_filtrada,
+        componente=maior_componente,
+        nome_arquivo="../images/maior_componente.png",
+        origem=origem,
+        destino=destino
     )
 
 
