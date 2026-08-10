@@ -2,7 +2,10 @@ from graph.loader import carregar_grafo
 from graph.filters import filtrar_nos, filtrar_adjacencia
 from graph.components import encontrar_componentes
 from graph.random_nodes import selecionar_dois_nos
-from visualization.plot_graph import plotar_componente
+from visualization.plot_graph import (
+    plotar_componente,
+    plotar_componentes_separados
+)
 
 
 def main():
@@ -32,6 +35,13 @@ def main():
 
     print(f"Componentes encontrados: {len(componentes)}")
 
+
+    print("\nTamanho das componentes:")
+
+    for i, componente in enumerate(componentes, start=1):
+        print(f"Componente {i}: {len(componente)} nós")
+
+
     # Seleciona o maior componente
     maior_componente = max(componentes, key=len)
 
@@ -49,13 +59,21 @@ def main():
     # 5. Gerar visualização
     # ==========================
     plotar_componente(
-        nos=nos_filtrados,
-        adjacencia=adj_filtrada,
-        componente=maior_componente,
-        nome_arquivo="../images/maior_componente.png",
-        origem=origem,
-        destino=destino
+        nos_filtrados,
+        adj_filtrada,
+        componentes,
+        "../images/maior_componente.png",
+        origem,
+        destino
     )
+    plotar_componentes_separados(
+        nos_filtrados,
+        adj_filtrada,
+        componentes,
+        "../images/componentes_separados.png"
+    )
+
+    
 
 
 if __name__ == "__main__":
