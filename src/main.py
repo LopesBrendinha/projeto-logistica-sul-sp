@@ -4,7 +4,7 @@ from graph.loader import carregar_grafo
 from graph.filters import filtrar_nos, filtrar_adjacencia
 from graph.components import encontrar_componentes
 from graph.random_nodes import selecionar_dois_nos
-from visualization.plot_graph import plotar_componente
+from visualization.plot_graph import plotar_componente, plotar_componentes_separados
 from algorithms.ucs import ucs
 
 
@@ -13,7 +13,7 @@ def main():
     # ==========================
     # 1. Carregar o grafo
     # ==========================
-    caminho = "/home/jorge/Documentos/HUBIA/Disciplinas/Linguagens_de_programacao/Trabalho_final_lp/projeto-logistica-sul-sp/data/grafo_adjacencia_enriquecido.json"
+    caminho = "../data/grafo_adjacencia_enriquecido.json"
 
     nos, adjacencia = carregar_grafo(caminho)
 
@@ -72,30 +72,35 @@ def main():
         print(f"Estados percorridos: {' -> '.join(ufs)}")
 
     # ==========================
-    # 5. Visualização do maior componente
+    # 5. Visualização dos componentes
     # ==========================
-    origem_viz, destino_viz = selecionar_dois_nos(maior_componente)
+    origem_viz, destino_viz = selecionar_dois_nos(
+        maior_componente
+    )
+
+    print("\n=== Visualização do maior componente ===")
+    print(f"Origem: {origem_viz}")
+    print(f"Destino: {destino_viz}")
 
     plotar_componente(
         nos=nos_filtrados,
         adjacencia=adj_filtrada,
-        componente=maior_componente,
-        nome_arquivo="/home/jorge/Documentos/HUBIA/Disciplinas/Linguagens_de_programacao/Trabalho_final_lp/projeto-logistica-sul-sp/images/maior_componente.png",
+        componentes=componentes,
+        nome_arquivo="../images/maior_componente.png",
         origem=origem_viz,
         destino=destino_viz
-        nos_filtrados,
-        adj_filtrada,
-        componentes,
-        "../images/maior_componente.png",
-        origem,
-        destino
     )
+
+    # ==========================
+    # 6. Visualização das componentes menores
+    # ==========================
     plotar_componentes_separados(
         nos_filtrados,
         adj_filtrada,
         componentes,
         "../images/componentes_separados.png"
     )
+
 
     
 
