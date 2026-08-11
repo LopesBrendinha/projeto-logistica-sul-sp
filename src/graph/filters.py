@@ -38,4 +38,29 @@ def filtrar_adjacencia(adjacencia, nos_filtrados):
             if destino in ids_validos:
                 nova_adjacencia[origem].append(aresta)
 
+    print("\n");
+
+    ESTADOS_SUL = {"PR", "SC", "RS"}
+
+    for id_no, info in nos_filtrados.items():
+
+        if info["uf_principal"] == "SP":
+
+            for aresta in nova_adjacencia.get(id_no, []):
+
+                destino = str(aresta["destino"])
+
+                if destino in nos_filtrados:
+
+                    estado_destino = nos_filtrados[destino]["uf_principal"]
+
+                    if estado_destino in ESTADOS_SUL:
+                        print(
+                            f"SP conectado diretamente a "
+                            f"{estado_destino}: "
+                            f"{id_no} -> {destino}"
+                    )
+    print("\n");
     return nova_adjacencia
+
+

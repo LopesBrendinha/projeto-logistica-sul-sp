@@ -83,7 +83,21 @@ def main():
         nome_arquivo="/home/jorge/Documentos/HUBIA/Disciplinas/Linguagens_de_programacao/Trabalho_final_lp/projeto-logistica-sul-sp/images/maior_componente.png",
         origem=origem_viz,
         destino=destino_viz
+        nos_filtrados,
+        adj_filtrada,
+        componentes,
+        "../images/maior_componente.png",
+        origem,
+        destino
     )
+    plotar_componentes_separados(
+        nos_filtrados,
+        adj_filtrada,
+        componentes,
+        "../images/componentes_separados.png"
+    )
+
+    
 
 
 if __name__ == "__main__":
