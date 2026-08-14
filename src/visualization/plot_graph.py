@@ -8,10 +8,13 @@ def plotar_componente(
     componente,
     nome_arquivo,
     origem=None,
-    destino=None
+    destino=None,
+    caminho=None,
+    distancia=None,
 ):
     """
-    Desenha um componente conectado e destaca os nós de origem e destino.
+    Desenha um componente conectado e destaca os nós de origem, destino
+    e a rota encontrada pelo UCS.
     """
 
     G = nx.Graph()
@@ -59,6 +62,21 @@ def plotar_componente(
         alpha=0.5
     )
 
+    # Destaca a rota UCS
+    if caminho:
+        arestas_rota = [
+            (caminho[i], caminho[i + 1])
+            for i in range(len(caminho) - 1)
+        ]
+        nx.draw_networkx_edges(
+            G,
+            posicoes,
+            edgelist=arestas_rota,
+            width=2.5,
+            alpha=0.9,
+            edge_color="orange",
+        )
+
     nx.draw_networkx_nodes(
         G,
         posicoes,
@@ -82,7 +100,12 @@ def plotar_componente(
         font_size=8
     )
 
-    plt.title("Maior componente conectado")
+    if caminho and distancia is not None:
+        plt.title(
+            f"Rota UCS — {len(caminho)} nós, {distancia:.2f} km"
+        )
+    else:
+        plt.title("Maior componente conectado")
 
     plt.axis("off")
 

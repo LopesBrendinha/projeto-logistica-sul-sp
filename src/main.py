@@ -71,18 +71,24 @@ def main():
                 ufs.append(uf)
         print(f"Estados percorridos: {' -> '.join(ufs)}")
 
-    # ==========================
-    # 5. Visualização do maior componente
-    # ==========================
-    origem_viz, destino_viz = selecionar_dois_nos(maior_componente)
+        if componente is maior_componente:
+            maior_caminho = caminho_ids
+            maior_origem = origem
+            maior_destino = destino
+            maior_distancia = distancia_total
 
+    # ==========================
+    # 5. Visualização da rota UCS no maior componente
+    # ==========================
     plotar_componente(
         nos=nos_filtrados,
         adjacencia=adj_filtrada,
         componente=maior_componente,
-        nome_arquivo="/home/jorge/Documentos/HUBIA/Disciplinas/Linguagens_de_programacao/Trabalho_final_lp/projeto-logistica-sul-sp/images/maior_componente.png",
-        origem=origem_viz,
-        destino=destino_viz
+        nome_arquivo="/home/jorge/Documentos/HUBIA/Disciplinas/Linguagens_de_programacao/Trabalho_final_lp/projeto-logistica-sul-sp/images/ucs_result.png",
+        origem=maior_origem,
+        destino=maior_destino,
+        caminho=maior_caminho,
+        distancia=maior_distancia,
     )
 
 
