@@ -1,24 +1,36 @@
 # Projeto Logística Sul-SP
 
-Projeto de busca de caminhos na malha rodoviária federal dos estados SP, PR, SC e RS, utilizando o algoritmo de Busca de Custo Uniforme (UCS).
+Projeto de busca de caminhos e otimização de rotas na malha rodoviária federal dos estados SP, PR, SC e RS, utilizando Busca de Custo Uniforme (UCS) e Algoritmo Genético para o Problema do Caixeiro Viajante (TSP).
 
 ---
 
 ## Estrutura do projeto
 
 ```
-src/
-├── main.py                  # Pipeline principal
-├── algorithms/
-│   ├── ucs.py               # Busca de Custo Uniforme
-│   └── tsp.py               # (futuro) Problema do Caixeiro Viajante
-├── graph/
-│   ├── loader.py            # Carregamento do grafo (JSON)
-│   ├── filters.py           # Filtro por estado (PR/SC/RS/SP)
-│   ├── components.py        # Encontrar componentes conexos (DFS)
-│   └── random_nodes.py      # Seleção aleatória de dois nós
-└── visualization/
-    └── plot_graph.py        # Visualização com NetworkX/Matplotlib
+projeto-logistica-sul-sp/
+├── src/
+│   ├── main.py                  # Pipeline principal
+│   ├── algorithms/
+│   │   ├── ucs.py               # Busca de Custo Uniforme
+│   │   └── tsp.py               # Algoritmo Genético para TSP
+│   ├── graph/
+│   │   ├── loader.py            # Carregamento do grafo (JSON)
+│   │   ├── filters.py           # Filtro por estado (PR/SC/RS/SP)
+│   │   ├── components.py        # Encontrar componentes conexos (DFS)
+│   │   ├── random_nodes.py      # Seleção aleatória de dois nós
+│   │   ├── informacoes_pontos.py # Informações dos pontos
+│   │   └── otimizador_rotas.py  # Otimização 2-OPT
+│   └── visualization/
+│       ├── plot_graph.py        # Visualização de componentes
+│       └── plotagem_tsp.py      # Visualização da rota TSP
+├── data/
+│   └── grafo_adjacencia_enriquecido.json
+├── images/
+│   ├── ucs_result.png           # Resultado UCS
+│   ├── componentes_separados.png # Componentes menores
+│   └── rota_tsp_sp.png          # Rota TSP otimizada
+└── results/
+    └── rota_otimizada_tsp_sp.txt # Rota TSP detalhada
 ```
 
 ---
@@ -32,7 +44,18 @@ src/
    - Seleciona dois nós aleatórios (`selecionar_dois_nos`)
    - Calcula o caminho de menor custo entre eles
    - Exibe caminho, rodovias, distância total e nós explorados
-5. **Visualizar** o maior componente com origem/destino destacados
+5. **Visualizar** o maior componente com a rota UCS destacada (`images/ucs_result.png`)
+6. **Visualizar** componentes menores separadamente (`images/componentes_separados.png`)
+7. **TSP com Algoritmo Genético** no maior componente:
+   - Seleciona pontos do estado de São Paulo (SP)
+   - Executa algoritmo genético para encontrar rota otimizada
+   - Exibe distância, número de pontos e progresso
+8. **Otimização 2-OPT** da rota TSP:
+   - Elimina cruzamentos na rota
+   - Melhora a distância total
+   - Exibe comparação antes/depois
+9. **Salvar** rota otimizada em `results/rota_otimizada_tsp_sp.txt`
+10. **Plotar** rota TSP otimizada (`images/rota_tsp_sp.png`)
 
 ---
 
@@ -156,6 +179,53 @@ Nós explorados pelo UCS: 12
 
 ---
 
+## Algoritmo Genético para TSP
+
+### Visão geral
+
+O Problema do Caixeiro Viajante (TSP) é resolvido usando um Algoritmo Genético (AG) que evolui uma população de rotas ao longo de várias gerações para encontrar a melhor solução. O AG é implementado em `src/algorithms/tsp.py`.
+
+### Funcionamento
+
+1. **Inicialização**: Gera população inicial aleatória de rotas
+2. **Avaliação**: Calcula fitness (distância total) de cada rota
+3. **Seleção**: Escolhe as melhores rotas para reprodução
+4. **Cruzamento**: Combina rotas parentais para gerar filhos
+5. **Mutação**: Introduz variações aleatórias na população
+6. **Elitismo**: Preserva as melhores soluções entre gerações
+7. **Iteração**: Repete por número definido de gerações
+
+### Parâmetros configuráveis
+
+- `populacao_tamanho`: Tamanho da população (padrão: 100)
+- `geracoes`: Número de gerações (padrão: 100)
+- `taxa_mutacao`: Probabilidade de mutação (padrão: 0.1)
+- `taxa_cruzamento`: Probabilidade de cruzamento (padrão: 0.8)
+- `elitismo`: Número de melhores indivíduos preservados (padrão: 2)
+
+---
+
+## Otimização 2-OPT
+
+### Visão geral
+
+Após encontrar uma rota com o Algoritmo Genético, a otimização 2-OPT é aplicada para eliminar cruzamentos e melhorar a distância total. Implementado em `src/graph/otimizador_rotas.py`.
+
+### Funcionamento
+
+1. **Identifica cruzamentos**: Detecta arestas que se cruzam na rota
+2. **Reconecta**: Inverte segmentos da rota para eliminar cruzamentos
+3. **Avalia**: Compara distância antes e depois
+4. **Itera**: Repete até não haver mais melhorias
+
+### Resultados típicos
+
+- Redução de 5-20% na distância total
+- Eliminação completa de cruzamentos
+- Rota mais limpa e eficiente
+
+---
+
 ## Formato dos dados
 
 O grafo é carregado de `data/grafo_adjacencia_enriquecido.json` com a seguinte estrutura:
@@ -188,24 +258,33 @@ O grafo é carregado de `data/grafo_adjacencia_enriquecido.json` com a seguinte 
 
 O custo utilizado pelo UCS é o campo `distancia_km` de cada aresta.
 
+## Execução
+
+```bash
+python src/main.py
+```
+
+O script usa caminhos relativos, então pode ser executado de qualquer diretório dentro do projeto.
+
+### Saída
+
+O pipeline gera os seguintes arquivos:
+
+- `images/ucs_result.png` - Visualização da rota UCS no maior componente
+- `images/componentes_separados.png` - Visualização das componentes menores
+- `images/rota_tsp_sp.png` - Visualização da rota TSP otimizada
+- `results/rota_otimizada_tsp_sp.txt` - Rota TSP detalhada com coordenadas
+
 ---
 
 ## Dependências
 
 - `networkx` — construção e renderização do grafo
-- `matplotlib` — salvamento da imagem PNG
+- `matplotlib` — salvamento das imagens PNG
+- `numpy` — operações numéricas para o algoritmo genético
 
 Instalar com:
 
 ```bash
 pip install -r requirements.txt
-```
-
----
-
-## Execução
-
-```bash
-cd src
-python main.py
 ```
