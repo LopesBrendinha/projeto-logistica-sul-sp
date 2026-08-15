@@ -1,8 +1,3 @@
-"""
-Algoritmo Genético para resolver o Problema do Caixeiro Viajante (TSP)
-Aplicado ao grafo rodoviário brasileiro
-"""
-
 import random
 import math
 import numpy as np

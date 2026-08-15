@@ -1,3 +1,4 @@
+import os
 import random
 import networkx as nx
 from graph.loader import carregar_grafo
@@ -12,12 +13,15 @@ from graph.otimizador_rotas import otimizar_rota_2opt
 from visualization.plotagem_tsp import plotar_rota_tsp_simples
 
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
 def main():
     random.seed(25)
     # ==========================
     # 1. Carregar o grafo
     # ==========================
-    caminho = "/home/maria-vit-ria-nogueira-de-souza/Documentos/IA_M1/projeto-logistica-sul-sp/data/grafo_adjacencia_enriquecido.json"
+    caminho = os.path.join(BASE_DIR, "data", "grafo_adjacencia_enriquecido.json")
 
     nos, adjacencia = carregar_grafo(caminho)
 
@@ -88,7 +92,7 @@ def main():
         nos=nos_filtrados,
         adjacencia=adj_filtrada,
         componentes=[maior_componente],
-        nome_arquivo="/home/jorge/Documentos/HUBIA/Disciplinas/Linguagens_de_programacao/Trabalho_final_lp/projeto-logistica-sul-sp/images/ucs_result.png",
+        nome_arquivo=os.path.join(BASE_DIR, "images", "ucs_result.png"),
         origem=maior_origem,
         destino=maior_destino,
         caminho=maior_caminho,
@@ -102,7 +106,7 @@ def main():
         nos_filtrados,
         adj_filtrada,
         componentes,
-        "/home/maria-vit-ria-nogueira-de-souza/Documentos/IA_M1/projeto-logistica-sul-sp/images/componentes_separados.png"
+        os.path.join(BASE_DIR, "images", "componentes_separados.png")
     )
 
     # ==========================
@@ -207,7 +211,7 @@ def main():
         print(f"   {i:2d}. ID: {str(no_id):>6s} | UF: {str(uf):2s} | Região: {str(regiao):12s} | Coord: ({lat}, {lon})")
 
     # Salvar rota em arquivo
-    with open('/home/maria-vit-ria-nogueira-de-souza/Documentos/IA_M1/projeto-logistica-sul-sp/results/rota_otimizada_tsp_sp.txt', 'w', encoding='utf-8') as f:
+    with open(os.path.join(BASE_DIR, "results", "rota_otimizada_tsp_sp.txt"), 'w', encoding='utf-8') as f:
         f.write("ROTA OTIMIZADA - TSP (SP) COM 2-OPT\n")
         f.write("="*80 + "\n")
         f.write(f"Distância total: {distancia_total:.2f} km\n")
@@ -243,7 +247,7 @@ def main():
         adjacencia=adj_filtrada,
         titulo=f"Rota TSP Otimizada - SP ({len(resultado_tsp['rota'])} pontos, {resultado_tsp['distancia']:.2f} km)",
         salvar=True,
-        caminho_arquivo='/home/maria-vit-ria-nogueira-de-souza/Documentos/IA_M1/projeto-logistica-sul-sp/images/rota_tsp_sp.png'
+        caminho_arquivo=os.path.join(BASE_DIR, "images", "rota_tsp_sp.png")
     )
 if __name__ == "__main__":
     main()
